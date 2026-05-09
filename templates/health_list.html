@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Health Log{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">❤️ Health Log</h1>
+        <p class="page-subtitle">Track your daily wellness — sleep, mood, hydration, movement.</p>
+    </div>
+    <a href="/health/add" class="btn btn-primary">+ Add Entry</a>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-grid stats-grid-3">
+    <div class="stat-card stat-blue">
+        <div class="stat-top"><span class="stat-icon">😴</span><span class="stat-label">Avg Sleep</span></div>
+        <div class="stat-value">{{ avg_sleep }}<span class="stat-unit">h</span></div>
+    </div>
+    <div class="stat-card stat-green">
+        <div class="stat-top"><span class="stat-icon">💧</span><span class="stat-label">Avg Water</span></div>
+        <div class="stat-value">{{ avg_water }}<span class="stat-unit">L</span></div>
+    </div>
+    <div class="stat-card stat-rose">
+        <div class="stat-top"><span class="stat-icon">💫</span><span class="stat-label">Wellbeing</span></div>
+        <div class="stat-value">{{ wellbeing }}<span class="stat-unit">%</span></div>
+    </div>
+</div>
+
+<!-- MOOD SUMMARY -->
+{% if total > 0 %}
+<div class="mood-summary widget">
+    <h3>Mood Overview ({{ total }} entries)</h3>
+    <div class="mood-bars">
+        {% set moods = [('Great', '😄', 'great'), ('Good', '🙂', 'good'), ('Okay', '😐', 'okay'), ('Bad', '😔', 'bad')] %}
+        {% for label, emoji, cls in moods %}
+        <div class="mood-bar-row">
+            <span class="mood-emoji">{{ emoji }}</span>
+            <span class="mood-label-sm">{{ label }}</span>
+            <div class="mood-track">
+                <div class="mood-fill mood-fill-{{ cls }}" style="width: {{ (mood_counts[label] / total * 100)|round|int }}%"></div>
+            </div>
+            <span class="mood-count">{{ mood_counts[label] }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- RECORDS TABLE -->
+<div class="widget">
+    <div class="widget-header">
+        <h3>📋 All Records</h3>
+        <span class="badge">{{ total }} entries</span>
+    </div>
+
+    {% if records %}
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Mood</th>
+                    <th>Energy</th>
+                    <th>Sleep</th>
+                    <th>Water</th>
+                    <th>Exercise</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in records %}
+            <tr>
+                <td><strong>{{ r['date'] }}</strong></td>
+                <td>
+                    <span class="tag tag-{{ r['mood']|lower }}">
+                        {% if r['mood'] == 'Great' %}😄{% elif r['mood'] == 'Good' %}🙂{% elif r['mood'] == 'Okay' %}😐{% else %}😔{% endif %}
+                        {{ r['mood'] }}
+                    </span>
+                </td>
+                <td><span class="tag tag-energy-{{ r['energy']|lower }}">{{ r['energy'] }}</span></td>
+                <td>{{ r['sleep_hours'] }} h</td>
+                <td>{{ r['water_intake'] }} L</td>
+                <td>{{ r['exercise'] or '—' }}</td>
+                <td class="notes-cell">{{ r['notes'] or '—' }}</td>
+                <td class="actions-cell">
+                    <a href="/health/edit/{{ r['id'] }}" class="btn-sm btn-edit">Edit</a>
+                    <a href="/health/delete/{{ r['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete this entry?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="empty-center">
+            <p class="empty-big">No records yet</p>
+            <p>Start logging your health today to see your progress!</p>
+            <a href="/health/add" class="btn btn-primary" style="margin-top:12px">+ Add First Entry</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

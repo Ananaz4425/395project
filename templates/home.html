@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block topbar_title %}{{ greeting }} 👋{% endblock %}
+
+{% block content %}
+
+<!-- STAT CARDS -->
+<div class="stats-grid">
+
+    <a href="/health" class="mc" style="text-decoration:none;">
+        <div class="mc-bar" style="background:#93c5fd;"></div>
+        <div class="mc-top">
+            <span class="mc-label">Entries</span>
+            <div class="mc-icon" style="background:#eef5fe;">
+                <i class="ti ti-clipboard-list" style="color:#3b82f6;" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="mc-num">{{ total_logs }}</div>
+        <div class="mc-sub">health records</div>
+        <i class="ti ti-arrow-right mc-arrow" aria-hidden="true"></i>
+    </a>
+
+    <a href="/goals" class="mc" style="text-decoration:none;">
+        <div class="mc-bar" style="background:#8fc454;"></div>
+        <div class="mc-top">
+            <span class="mc-label">Goals</span>
+            <div class="mc-icon" style="background:#eef6e6;">
+                <i class="ti ti-target" style="color:#5a9e28;" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="mc-num">{{ active_goals }}</div>
+        <div class="mc-sub">active goals</div>
+        <i class="ti ti-arrow-right mc-arrow" aria-hidden="true"></i>
+    </a>
+
+    <a href="/deadlines" class="mc" style="text-decoration:none;">
+        <div class="mc-bar" style="background:#f0c060;"></div>
+        <div class="mc-top">
+            <span class="mc-label">Deadlines</span>
+            <div class="mc-icon" style="background:#fef8e6;">
+                <i class="ti ti-clock" style="color:#b07800;" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="mc-num">{{ pending_deadlines }}</div>
+        <div class="mc-sub">this week</div>
+        <i class="ti ti-arrow-right mc-arrow" aria-hidden="true"></i>
+    </a>
+
+    <div class="mc mc-dark">
+        <div class="mc-bar" style="background:#8fc454;"></div>
+        <div class="mc-top">
+            <span class="mc-label" style="color:rgba(232,224,204,0.35);">Wellbeing</span>
+            <div class="mc-icon" style="background:rgba(150,190,90,0.12);">
+                <i class="ti ti-heart" style="color:#8fc454;" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="mc-num" style="color:#e8e0cc;">{{ wellbeing }}<span class="mc-unit">%</span></div>
+        <div class="mc-sub" style="color:rgba(232,224,204,0.35);">7-day score</div>
+        <div class="mc-wb-bar">
+            <div class="mc-wb-fill" style="width:{{ wellbeing }}%;"></div>
+        </div>
+    </div>
+
+</div>
+
+{% if affirmation %}
+<div class="aff-banner">
+    <div class="aff-icon"><i class="ti ti-sparkles" aria-hidden="true"></i></div>
+    <p class="aff-text">"{{ affirmation['text'] }}"</p>
+    <span class="aff-tag">{{ affirmation['category'] }}</span>
+</div>
+{% endif %}
+
+<div class="dash-grid">
+
+    <div class="panel">
+        <div class="panel-hdr">
+            <span class="panel-title"><i class="ti ti-calendar-due" aria-hidden="true"></i> Upcoming deadlines</span>
+            <a href="/deadlines" class="panel-link">View all →</a>
+        </div>
+        {% if urgent_deadlines %}
+            {% for d in urgent_deadlines %}
+            <div class="d-row">
+                <div class="d-pip" style="background:{%- if d['priority'] == 'High' %}#d4604a{%- elif d['priority'] == 'Medium' %}#e8b84b{%- else %}#7db84a{%- endif %};"></div>
+                <div class="d-body">
+                    <div class="d-title">{{ d['title'] }}</div>
+                    <div class="d-meta">{{ d['subject'] or 'General' }}</div>
+                </div>
+                <div class="d-right">
+                    <span class="d-pill d-pill-{{ d['priority'] | lower }}">{{ d['priority'] }}</span>
+                    <span class="d-date">{{ d['due_date'] }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-msg">No upcoming deadlines 🎉</p>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <div class="panel-hdr">
+            <span class="panel-title"><i class="ti ti-target" aria-hidden="true"></i> Active goals</span>
+            <a href="/goals" class="panel-link">View all →</a>
+        </div>
+        {% set cat_styles = {
+            'Health':        ('#fdecea', '#a03228', 'ti-heart'),
+            'Fitness':       ('#eaf3de', '#2e5c10', 'ti-run'),
+            'Academic':      ('#fef3d8', '#8a5e00', 'ti-book'),
+            'Mental Health': ('#f0edf8', '#5c3d99', 'ti-brain'),
+            'Personal':      ('#fef3d8', '#8a5e00', 'ti-star'),
+            'Finance':       ('#eaf3de', '#2e5c10', 'ti-coin'),
+            'Social':        ('#fef3d8', '#8a5e00', 'ti-users'),
+            'General':       ('#eaf3de', '#2e5c10', 'ti-target')
+        } %}
+        {% if active_goals_list %}
+            {% for g in active_goals_list %}
+            {% set s = cat_styles.get(g['category'], ('#eaf3de', '#2e5c10', 'ti-target')) %}
+            <div class="d-row">
+                <div class="g-ico" style="background:{{ s[0] }};">
+                    <i class="ti {{ s[2] }}" style="color:{{ s[1] }};font-size:13px;" aria-hidden="true"></i>
+                </div>
+                <div class="d-body">
+                    <div class="d-title">{{ g['title'] }}</div>
+                    <div class="d-meta">{{ g['category'] }}</div>
+                </div>
+                <div class="d-right">
+                    <span class="d-pill d-pill-{{ g['priority'] | lower }}">{{ g['priority'] }}</span>
+                    {% if g['deadline'] %}<span class="d-date">{{ g['deadline'] }}</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-msg">No active goals yet. <a href="/goals/add">Add one!</a></p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Bestie{% endblock %} — Your Bestie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-text">Your Bestie</span>
+        <span class="logo-tagline">wellness tracker</span>
+    </div>
+
+    <div class="nav-group">
+        <span class="nav-label">Overview</span>
+        <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+            <i class="nav-icon ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard
+        </a>
+    </div>
+
+    <div class="nav-group">
+        <span class="nav-label">Track</span>
+        <a href="/health" class="nav-link {% if '/health' in request.path %}active{% endif %}">
+            <i class="nav-icon ti ti-heart" aria-hidden="true"></i> Health Log
+        </a>
+        <a href="/goals" class="nav-link {% if '/goals' in request.path %}active{% endif %}">
+            <i class="nav-icon ti ti-target" aria-hidden="true"></i> Goals
+        </a>
+        <a href="/deadlines" class="nav-link {% if '/deadlines' in request.path %}active{% endif %}">
+            <i class="nav-icon ti ti-clock" aria-hidden="true"></i> Deadlines
+        </a>
+        <a href="/affirmations" class="nav-link {% if '/affirmations' in request.path %}active{% endif %}">
+            <i class="nav-icon ti ti-sparkles" aria-hidden="true"></i> Affirmations
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <p class="sidebar-quote">"feel good,<br>study better ✦"</p>
+    </div>
+</nav>
+
+<div class="page-wrapper">
+    <header class="topbar">
+        <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Toggle menu">☰</button>
+        <div class="topbar-left">
+            <h1>{% block topbar_title %}Your Bestie{% endblock %}</h1>
+            <div class="topbar-date">{{ now.strftime('%A, %B %d') if now else '' }}</div>
+        </div>
+        <div class="topbar-right">
+            <a href="/deadlines" class="notif-btn" aria-label="Deadlines">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+                {% if pending_count and pending_count > 0 %}<div class="notif-dot"></div>{% endif %}
+            </a>
+            <a href="/health/add" class="btn btn-primary">
+                <i class="ti ti-plus" aria-hidden="true"></i> Log today
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+</body>
+</html>

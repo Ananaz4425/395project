@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Bestie{% endblock %} — Your Bestie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+
+<nav class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-leaf">🌸</span>
+        <span class="logo-text">Your Bestie</span>
+    </div>
+
+    <div class="nav-section">
+        <p class="nav-label">Overview</p>
+        <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+            <span class="nav-icon">◈</span> Dashboard
+        </a>
+    </div>
+
+    <div class="nav-section">
+        <p class="nav-label">Track</p>
+        <a href="/health" class="nav-link {% if '/health' in request.path %}active{% endif %}">
+            <span class="nav-icon">♡</span> Health Log
+        </a>
+        <a href="/goals" class="nav-link {% if '/goals' in request.path %}active{% endif %}">
+            <span class="nav-icon">◎</span> Goals
+        </a>
+        <a href="/deadlines" class="nav-link {% if '/deadlines' in request.path %}active{% endif %}">
+            <span class="nav-icon">◷</span> Deadlines
+        </a>
+        <a href="/affirmations" class="nav-link {% if '/affirmations' in request.path %}active{% endif %}">
+            <span class="nav-icon">✦</span> Affirmations
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <p class="sidebar-quote">"feel good, study better 💫"</p>
+    </div>
+</nav>
+
+<div class="page-wrapper">
+    <header class="topbar">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-right">
+            <span class="topbar-date">{{ now.strftime('%A, %B %d') if now else '' }}</span>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script>
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+}
+</script>
+</body>
+</html>

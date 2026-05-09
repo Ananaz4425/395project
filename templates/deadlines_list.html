@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}Deadlines{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">◷ Deadlines</h1>
+        <p class="page-subtitle">Stay on top of your academic and personal commitments.</p>
+    </div>
+    <a href="/deadlines/add" class="btn btn-primary">+ Add Deadline</a>
+</div>
+
+{% set pending = deadlines|rejectattr('status','eq','Done')|list %}
+{% set done = deadlines|selectattr('status','eq','Done')|list %}
+
+{% if pending %}
+<div class="deadline-list">
+{% for d in pending %}
+<div class="deadline-card {% if d['overdue'] %}deadline-overdue{% endif %} priority-border-{{ d['priority']|lower }}">
+    <div class="deadline-left">
+        <div class="deadline-icon">
+            {% if d['overdue'] %}🔴{% elif d['priority'] == 'High' %}🟠{% elif d['priority'] == 'Medium' %}🟡{% else %}🟢{% endif %}
+        </div>
+        <div>
+            <p class="deadline-card-title">{{ d['title'] }}</p>
+            <p class="deadline-card-meta">
+                {% if d['subject'] %}<span>{{ d['subject'] }}</span> · {% endif %}
+                <span>Due: <strong>{{ d['due_date'] }}</strong></span>
+                {% if d['overdue'] %}<span class="overdue-tag">OVERDUE</span>{% endif %}
+            </p>
+            {% if d['notes'] %}<p class="deadline-notes">{{ d['notes'] }}</p>{% endif %}
+        </div>
+    </div>
+    <div class="deadline-right">
+        <span class="badge badge-status-{{ d['status']|lower|replace(' ','-') }}">{{ d['status'] }}</span>
+        <div class="deadline-btns">
+            <a href="/deadlines/done/{{ d['id'] }}" class="btn-sm btn-complete">✓ Done</a>
+            <a href="/deadlines/edit/{{ d['id'] }}" class="btn-sm btn-edit">Edit</a>
+            <a href="/deadlines/delete/{{ d['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete?')">Del</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if done %}
+<h3 class="section-heading" style="margin-top:28px">✅ Completed</h3>
+<div class="deadline-list">
+{% for d in done %}
+<div class="deadline-card goal-done">
+    <div class="deadline-left">
+        <div class="deadline-icon">✅</div>
+        <div>
+            <p class="deadline-card-title">{{ d['title'] }}</p>
+            <p class="deadline-card-meta">{{ d['subject'] or 'General' }} · {{ d['due_date'] }}</p>
+        </div>
+    </div>
+    <div class="deadline-right">
+        <a href="/deadlines/delete/{{ d['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete?')">Delete</a>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if not deadlines %}
+<div class="empty-center">
+    <p class="empty-big">No deadlines added</p>
+    <a href="/deadlines/add" class="btn btn-primary" style="margin-top:12px">+ Add First Deadline</a>
+</div>
+{% endif %}
+{% endblock %}

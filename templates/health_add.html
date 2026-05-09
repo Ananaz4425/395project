@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Add Health Entry{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">➕ Log Health Entry</h1>
+        <p class="page-subtitle">How are you doing today? Be honest with yourself.</p>
+    </div>
+</div>
+
+<div class="form-card">
+    <form action="/health/add" method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>📅 Date</label>
+                <input type="date" name="date" value="{{ today }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>🧠 Mood</label>
+                <select name="mood" required>
+                    <option value="">Select mood...</option>
+                    <option value="Great">😄 Great</option>
+                    <option value="Good">🙂 Good</option>
+                    <option value="Okay">😐 Okay</option>
+                    <option value="Bad">😔 Bad</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>⚡ Energy Level</label>
+                <select name="energy" required>
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>😴 Sleep Hours</label>
+                <input type="number" name="sleep" step="0.5" min="0" max="24" placeholder="e.g. 7.5" required>
+            </div>
+
+            <div class="form-group">
+                <label>💧 Water Intake (L)</label>
+                <input type="number" name="water" step="0.1" min="0" max="10" placeholder="e.g. 2.0" required>
+            </div>
+
+            <div class="form-group">
+                <label>🏃 Exercise</label>
+                <input type="text" name="exercise" placeholder="e.g. 30 min walk, gym, yoga...">
+            </div>
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>📝 Notes</label>
+            <textarea name="notes" rows="3" placeholder="Anything on your mind today?"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <a href="/health" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Entry ✓</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

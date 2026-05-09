@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block title %}Affirmations{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">✦ Affirmations</h1>
+        <p class="page-subtitle">Your daily dose of positive energy and self-belief.</p>
+    </div>
+    <a href="/affirmations/add" class="btn btn-primary">+ Add Affirmation</a>
+</div>
+
+{% set favorites = items|selectattr('is_favorite','eq',1)|list %}
+{% set others = items|rejectattr('is_favorite','eq',1)|list %}
+
+{% if favorites %}
+<h3 class="section-heading">⭐ Favorites</h3>
+<div class="affirmation-grid">
+{% for a in favorites %}
+<div class="affirmation-card affirmation-fav">
+    <p class="affirmation-card-text">"{{ a['text'] }}"</p>
+    <div class="affirmation-footer">
+        <span class="badge badge-cat">{{ a['category'] }}</span>
+        <div class="aff-actions">
+            <a href="/affirmations/toggle/{{ a['id'] }}" class="btn-sm btn-star active">⭐</a>
+            <a href="/affirmations/delete/{{ a['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete?')">✕</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if others %}
+<h3 class="section-heading" style="margin-top:24px">All Affirmations</h3>
+<div class="affirmation-grid">
+{% for a in others %}
+<div class="affirmation-card">
+    <p class="affirmation-card-text">"{{ a['text'] }}"</p>
+    <div class="affirmation-footer">
+        <span class="badge badge-cat">{{ a['category'] }}</span>
+        <div class="aff-actions">
+            <a href="/affirmations/toggle/{{ a['id'] }}" class="btn-sm btn-star">☆</a>
+            <a href="/affirmations/delete/{{ a['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete?')">✕</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if not items %}
+<div class="empty-center">
+    <p class="empty-big">No affirmations yet</p>
+    <p>Add one to boost your mindset every day!</p>
+    <a href="/affirmations/add" class="btn btn-primary" style="margin-top:12px">+ Add Affirmation</a>
+</div>
+{% endif %}
+{% endblock %}

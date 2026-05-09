@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Goals{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">◎ My Goals</h1>
+        <p class="page-subtitle">Set intentions, track progress, celebrate wins.</p>
+    </div>
+    <a href="/goals/add" class="btn btn-primary">+ New Goal</a>
+</div>
+
+{% set active = goals|selectattr('status','eq','Active')|list %}
+{% set completed = goals|selectattr('status','eq','Completed')|list %}
+
+{% if active %}
+<h3 class="section-heading">🌱 Active Goals</h3>
+<div class="goal-grid">
+{% for g in active %}
+<div class="goal-card priority-border-{{ g['priority']|lower }}">
+    <div class="goal-top">
+        <span class="badge badge-cat">{{ g['category'] }}</span>
+        <span class="badge badge-{{ g['priority']|lower }}">{{ g['priority'] }}</span>
+    </div>
+    <h3 class="goal-title">{{ g['title'] }}</h3>
+    {% if g['description'] %}
+    <p class="goal-desc">{{ g['description'] }}</p>
+    {% endif %}
+    {% if g['deadline'] %}
+    <p class="goal-deadline">🗓 Deadline: <strong>{{ g['deadline'] }}</strong></p>
+    {% endif %}
+    <div class="goal-actions">
+        <a href="/goals/complete/{{ g['id'] }}" class="btn-sm btn-complete">✓ Complete</a>
+        <a href="/goals/edit/{{ g['id'] }}" class="btn-sm btn-edit">Edit</a>
+        <a href="/goals/delete/{{ g['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete this goal?')">Delete</a>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if completed %}
+<h3 class="section-heading" style="margin-top:30px">✅ Completed Goals</h3>
+<div class="goal-grid">
+{% for g in completed %}
+<div class="goal-card goal-done">
+    <div class="goal-top">
+        <span class="badge badge-cat">{{ g['category'] }}</span>
+        <span class="badge badge-done">Done ✓</span>
+    </div>
+    <h3 class="goal-title">{{ g['title'] }}</h3>
+    <div class="goal-actions">
+        <a href="/goals/delete/{{ g['id'] }}" class="btn-sm btn-del" onclick="return confirm('Delete this goal?')">Delete</a>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if not goals %}
+<div class="empty-center">
+    <p class="empty-big">No goals yet</p>
+    <p>Set your first goal and start your journey!</p>
+    <a href="/goals/add" class="btn btn-primary" style="margin-top:12px">+ Add Goal</a>
+</div>
+{% endif %}
+{% endblock %}

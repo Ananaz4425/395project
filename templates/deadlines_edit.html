@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Edit Deadline{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1 class="page-title">✏️ Edit Deadline</h1></div></div>
+<div class="form-card">
+    <form action="/deadlines/edit/{{ dl['id'] }}" method="POST">
+        <div class="form-grid">
+            <div class="form-group form-group-full">
+                <label>📌 Title</label>
+                <input type="text" name="title" value="{{ dl['title'] }}" required>
+            </div>
+            <div class="form-group">
+                <label>📚 Subject</label>
+                <input type="text" name="subject" value="{{ dl['subject'] or '' }}">
+            </div>
+            <div class="form-group">
+                <label>📅 Due Date</label>
+                <input type="date" name="due_date" value="{{ dl['due_date'] }}" required>
+            </div>
+            <div class="form-group">
+                <label>🔥 Priority</label>
+                <select name="priority">
+                    {% for p in ['High','Medium','Low'] %}
+                    <option value="{{ p }}" {% if dl['priority'] == p %}selected{% endif %}>{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>📊 Status</label>
+                <select name="status">
+                    {% for s in ['Pending','In Progress','Done'] %}
+                    <option value="{{ s }}" {% if dl['status'] == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group form-group-full">
+            <label>📝 Notes</label>
+            <textarea name="notes" rows="2">{{ dl['notes'] or '' }}</textarea>
+        </div>
+        <div class="form-actions">
+            <a href="/deadlines" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update ✓</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

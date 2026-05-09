@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Edit Goal{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1 class="page-title">✏️ Edit Goal</h1></div>
+</div>
+<div class="form-card">
+    <form action="/goals/edit/{{ goal['id'] }}" method="POST">
+        <div class="form-grid">
+            <div class="form-group form-group-full">
+                <label>🎯 Goal Title</label>
+                <input type="text" name="title" value="{{ goal['title'] }}" required>
+            </div>
+            <div class="form-group">
+                <label>📁 Category</label>
+                <select name="category">
+                    {% for cat in ['Health','Academic','Fitness','Mental Health','Social','Personal','Finance','General'] %}
+                    <option value="{{ cat }}" {% if goal['category'] == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>🔥 Priority</label>
+                <select name="priority">
+                    {% for p in ['High','Medium','Low'] %}
+                    <option value="{{ p }}" {% if goal['priority'] == p %}selected{% endif %}>{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>🗓 Deadline</label>
+                <input type="date" name="deadline" value="{{ goal['deadline'] or '' }}">
+            </div>
+            <div class="form-group">
+                <label>📊 Status</label>
+                <select name="status">
+                    {% for s in ['Active','On Hold','Completed'] %}
+                    <option value="{{ s }}" {% if goal['status'] == s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group form-group-full">
+            <label>📝 Description</label>
+            <textarea name="description" rows="3">{{ goal['description'] or '' }}</textarea>
+        </div>
+        <div class="form-actions">
+            <a href="/goals" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Goal ✓</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

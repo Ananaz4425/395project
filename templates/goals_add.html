@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}New Goal{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">✨ New Goal</h1>
+        <p class="page-subtitle">What do you want to achieve?</p>
+    </div>
+</div>
+
+<div class="form-card">
+    <form action="/goals/add" method="POST">
+        <div class="form-grid">
+            <div class="form-group form-group-full">
+                <label>🎯 Goal Title</label>
+                <input type="text" name="title" placeholder="e.g. Sleep 8 hours every night" required>
+            </div>
+
+            <div class="form-group">
+                <label>📁 Category</label>
+                <select name="category">
+                    <option value="Health">Health</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Fitness">Fitness</option>
+                    <option value="Mental Health">Mental Health</option>
+                    <option value="Social">Social</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Finance">Finance</option>
+                    <option value="General">General</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>🔥 Priority</label>
+                <select name="priority">
+                    <option value="High">High</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>🗓 Deadline (optional)</label>
+                <input type="date" name="deadline">
+            </div>
+
+            <div class="form-group">
+                <label>📊 Status</label>
+                <select name="status">
+                    <option value="Active" selected>Active</option>
+                    <option value="On Hold">On Hold</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>📝 Description</label>
+            <textarea name="description" rows="3" placeholder="Why is this goal important to you?"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <a href="/goals" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create Goal ✓</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
